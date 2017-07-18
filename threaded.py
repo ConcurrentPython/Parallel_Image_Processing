@@ -3,6 +3,7 @@ from pathlib import Path
 from PIL import Image
 from PIL import ImageFilter
 import sys
+import concurrent.futures
 
 in_path = Path.cwd() / "images"
 out_path = Path.cwd() / "processed"
@@ -14,17 +15,22 @@ if not in_path.exists():
 if not out_path.exists():
     out_path.mkdir()
 
-import time
-start = time.time()
-names = list(in_path.glob("*")) * 4
-for image_file in names:
-    outfile = out_path / image_file.name
+def process_one_file(filename):
+    outfile = out_path / filename.name
     try:
-        image = Image.open(image_file)
-        # image.thumbnail((128, 128))
+        image = Image.open(filename)
         image.filter(ImageFilter.DETAIL)
         #image.save(outfile, "JPEG")
     except IOError:
-        print(f"Cannot create thumbnail for {infile}")
+        print(f"Cannot create thumbnail for {filename.name}")
+
+names = list(in_path.glob("*")) * 4
+
+import time
+start = time.time()
+executor = concurrent.futures.ThreadPoolExecutor()
+list(executor.map(process_one_file, names))
 print(time.time() - start)
 
+# for image_file in in_path.glob("*"):
+#     process_one_file(image_file)
