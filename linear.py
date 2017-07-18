@@ -16,7 +16,7 @@ if not out_path.exists():
 
 import time
 start = time.time()
-names = list(in_path.glob("*")) * 4
+names = list(in_path.glob("*"))
 for image_file in names:
     outfile = out_path / image_file.name
     try:
@@ -26,5 +26,6 @@ for image_file in names:
         #image.save(outfile, "JPEG")
     except IOError:
         print(f"Cannot create thumbnail for {infile}")
+
 print(time.time() - start)
 

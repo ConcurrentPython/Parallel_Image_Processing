@@ -28,7 +28,7 @@ names = list(in_path.glob("*")) #* 4
 
 import time
 start = time.time()
-executor = concurrent.futures.ThreadPoolExecutor(99)
+executor = concurrent.futures.ProcessPoolExecutor(99)
 list(executor.map(process_one_file, names))
 print(time.time() - start)
 
